@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,8 +35,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.realm.ObjectServerError;
+import io.realm.Realm;
+import io.realm.SyncConfiguration;
+import io.realm.SyncCredentials;
+import io.realm.SyncUser;
+import me.arblitroshani.thesisproject.Constants;
 import me.arblitroshani.thesisproject.R;
 import me.arblitroshani.thesisproject.model.NameStat;
+import me.arblitroshani.thesisproject.model.NameStatRealm;
 
 public class UploadFragment extends Fragment implements View.OnClickListener {
 
@@ -68,6 +76,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
 
     private DatabaseReference realtimeRef;
     private CollectionReference firestoreRef;
+    private Realm realmRef;
 
     private InputStream inputStream;
     private InputStreamReader inputReader;
@@ -76,6 +85,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
     private int dataSetSize;
     private int numTrials;
     private NameStat ns;
+    private NameStatRealm nsr;
     private String line;
 
 
@@ -112,6 +122,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
         bRealm.setOnClickListener(this);
 
         realtimeRef = FirebaseDatabase.getInstance().getReference(REALTIME_PATH);
+        loginRealm();
 
         Description d = new Description();
         d.setText("Chart description");
@@ -164,36 +175,65 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
             @Override
             public void run() {
                 double weightedAverage = 0.0;
-                try {
-                    for (int j = 0; j <= numTrials; j++) {
-                        if (touchIndex == 0) realtimeRef.removeValue();
-                        if (touchIndex == 1) firestoreRef = FirebaseFirestore.getInstance().collection(FIRESTORE_PATH + System.currentTimeMillis());
 
-                        inputStream = getResources().openRawResource(R.raw.yob2017);
-                        inputReader = new InputStreamReader(inputStream);
-                        bufferedReader = new BufferedReader(inputReader);
-
-                        long startTime = System.nanoTime();
-                        for (int i = 0; i < dataSetSize; i++) {
-                            line = bufferedReader.readLine();
-                            List<String> list = Arrays.asList(line.split(","));
-                            ns = new NameStat(list.get(0), 2017, Integer.parseInt(list.get(2)), list.get(1));
-                            if (touchIndex == 0) realtimeRef.push().setValue(ns);
-                            if (touchIndex == 1) firestoreRef.document().set(ns);
-                        }
-                        if (j == 0) continue;
-
-                        long endTime = System.nanoTime();
-                        double diff = (endTime - startTime) / 1000000.0;
-                        if (j == 1) {
-                            weightedAverage = diff;
-                        } else {
-                            weightedAverage = 0.8 * weightedAverage + 0.2 * diff;
-                        }
-                        entriesUpload[touchIndex].add(new Entry((float) j, (float) diff));
+                for (int j = 0; j <= numTrials; j++) {
+                    if (touchIndex == 0) {
+                        realtimeRef.removeValue();
+                    } else if (touchIndex == 1) {
+                        firestoreRef = FirebaseFirestore.getInstance().collection(FIRESTORE_PATH + System.currentTimeMillis());
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+
+                    inputStream = getResources().openRawResource(R.raw.yob2017);
+                    inputReader = new InputStreamReader(inputStream);
+                    bufferedReader = new BufferedReader(inputReader);
+
+                    long startTime = System.nanoTime();
+
+                    if (touchIndex < 2) {
+                        try {
+                            for (int i = 0; i < dataSetSize; i++) {
+                                line = bufferedReader.readLine();
+                                List<String> list = Arrays.asList(line.split(","));
+                                ns = new NameStat(list.get(0), 2017, Integer.parseInt(list.get(2)), list.get(1));
+                                if (touchIndex == 0) {
+                                    realtimeRef.push().setValue(ns);
+                                } else if (touchIndex == 1) {
+                                    firestoreRef.document().set(ns);
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        getActivity().runOnUiThread(() ->
+                                realmRef.executeTransactionAsync(realm -> {
+                                    try {
+                                        for (int i = 0; i < dataSetSize; i++) {
+                                            line = bufferedReader.readLine();
+                                            List<String> list = Arrays.asList(line.split(","));
+                                            nsr = new NameStatRealm();
+                                            nsr.setName(list.get(0));
+                                            nsr.setYear(2017);
+                                            nsr.setOccurrences(Integer.parseInt(list.get(2)));
+                                            nsr.setSex(list.get(1));
+                                            realm.insert(nsr);
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }));
+                    }
+
+                    if (j == 0) continue;
+
+                    long endTime = System.nanoTime();
+                    double diff = (endTime - startTime) / 1000000.0;
+                    if (j == 1) {
+                        weightedAverage = diff;
+                    } else {
+                        weightedAverage = 0.8 * weightedAverage + 0.2 * diff;
+                    }
+                    entriesUpload[touchIndex].add(new Entry((float) j, (float) diff));
                 }
 
                 final String toPrintAve = new DecimalFormat("#0.000").format(weightedAverage) + " ms";
@@ -207,6 +247,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
             }
         };
         t.start();
+
     }
 
     private boolean getInput() {
@@ -233,5 +274,30 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
         dataSetUpload[index] = new LineDataSet(entriesUpload[index], LABELS[index]);
         dataSetUpload[index].setColor(LINE_COLORS[index]);
         dataSetUpload[index].setValueTextColor(DEFAULT_LABEL_COLOR);
+    }
+
+    private void loginRealm() {
+        if (SyncUser.current() == null) {
+            SyncCredentials credentials = SyncCredentials.nickname("arbli", false);
+            SyncUser.logInAsync(credentials, Constants.AUTH_URL, new SyncUser.Callback<SyncUser>() {
+                @Override public void onSuccess(SyncUser user) { setupRealm(); }
+                @Override public void onError(ObjectServerError error) { Log.e("Login error", error.toString()); }
+            });
+        } else {
+            setupRealm();
+        }
+    }
+
+    private void setupRealm() {
+        SyncConfiguration configuration = SyncUser.current()
+                .createConfiguration(Constants.REALM_BASE_URL + "/default")
+                .build();
+        realmRef = Realm.getInstance(configuration);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        realmRef.close();
     }
 }
