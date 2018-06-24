@@ -37,9 +37,8 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
 
     private static final String REALTIME_PATH = "namesUploadTest";
 
-    private static final String LABEL_REALTIME = "Realtime Database";
-    private static final String LABEL_FIRESTORE = "Cloud Firestore";
-    private static final String LABEL_REALM = "Realm Platform";
+    private static final String[] LABELS = {"Realtime Database", "Cloud Firestore", "Realm Platform"};
+    private static final int[] LINE_COLORS = {Color.BLUE, Color.GREEN, Color.GRAY};
 
     private static final int REALTIME_INDEX = 0;
     private static final int FIRESTORE_INDEX = 1;
@@ -58,15 +57,10 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
 
     private List<ILineDataSet> dataSets;
     private LineData lineData;
-    private List<Entry> entriesUploadRealtime;
-    private List<Entry> entriesUploadFirestore;
-    private List<Entry> entriesUploadRealm;
-    private LineDataSet dataSetUploadRealtime;
-    private LineDataSet dataSetUploadFirestore;
-    private LineDataSet dataSetUploadRealm;
+    private List<Entry>[] entriesUpload;
+    private LineDataSet[] dataSetUpload;
 
     private DatabaseReference realtimeRef;
-
     private int dataSetSize;
     private int numTrials;
 
@@ -113,30 +107,17 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
         xAxis.setGranularity(1f); // only intervals of 1 unit
 
         dataSets = new ArrayList<>();
+        entriesUpload = new ArrayList[3];
+        dataSetUpload = new LineDataSet[3];
 
-        entriesUploadRealtime = new ArrayList<>();
-        entriesUploadFirestore = new ArrayList<>();
-        entriesUploadRealm = new ArrayList<>();
-
-        createLineDataSet(REALTIME_INDEX);
-        createLineDataSet(FIRESTORE_INDEX);
-        createLineDataSet(REALM_INDEX);
-
-        dataSets.add(dataSetUploadRealtime);
-        dataSets.add(dataSetUploadFirestore);
-        dataSets.add(dataSetUploadRealm);
-
-        entriesUploadRealtime.add(new Entry((float) 0.0, (float) 0.0));
-        entriesUploadFirestore.add(new Entry((float) 0.0, (float) 0.0));
-        entriesUploadRealm.add(new Entry((float) 0.0, (float) 0.0));
-
-        dataSetUploadRealtime.setValues(entriesUploadRealtime);
-        dataSetUploadFirestore.setValues(entriesUploadFirestore);
-        dataSetUploadRealm.setValues(entriesUploadRealm);
-
-        dataSets.set(0, dataSetUploadRealtime);
-        dataSets.set(1, dataSetUploadFirestore);
-        dataSets.set(2, dataSetUploadRealm);
+        for (int i = 0; i < 3; i++) {
+            entriesUpload[i] = new ArrayList<>();
+            createLineDataSet(i);
+            dataSets.add(dataSetUpload[i]);
+            entriesUpload[i].add(new Entry((float) 0.0, (float) 0.0));
+            dataSetUpload[i].setValues(entriesUpload[i]);
+            dataSets.set(i, dataSetUpload[i]);
+        }
 
         chart.setData(new LineData(dataSets));
     }
@@ -150,7 +131,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                 if (!getInput()) return;
 
                 createLineDataSet(REALTIME_INDEX);
-                entriesUploadRealtime.clear();
+                entriesUpload[REALTIME_INDEX].clear();
 
                 InputStream inputStream;
                 InputStreamReader inputReader;
@@ -177,14 +158,14 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                         long endTime = System.nanoTime();
                         double diff = (endTime - startTime) / 1000000.0;
                         // add to array
-                        entriesUploadRealtime.add(new Entry((float) j, (float) diff));
+                        entriesUpload[REALTIME_INDEX].add(new Entry((float) j, (float) diff));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
-                dataSetUploadRealtime.setValues(entriesUploadRealtime);
-                dataSets.set(0, dataSetUploadRealtime);
+                dataSetUpload[REALTIME_INDEX].setValues(entriesUpload[REALTIME_INDEX]);
+                dataSets.set(REALTIME_INDEX, dataSetUpload[REALTIME_INDEX]);
                 updateChart();
 
                 break;
@@ -192,23 +173,17 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                 if (!getInput()) return;
 
                 createLineDataSet(FIRESTORE_INDEX);
-                entriesUploadFirestore.clear();
+                entriesUpload[FIRESTORE_INDEX].clear();
 
-                entriesUploadFirestore.add(new Entry((float) 1.0, (float) 8.0));
-                entriesUploadFirestore.add(new Entry((float) 2.0, (float) 10.0));
+                entriesUpload[FIRESTORE_INDEX].add(new Entry((float) 1.0, (float) 8.0));
+                entriesUpload[FIRESTORE_INDEX].add(new Entry((float) 2.0, (float) 10.0));
 
-                dataSetUploadFirestore.setValues(entriesUploadFirestore);
-                dataSets.set(1, dataSetUploadFirestore);
+                dataSetUpload[FIRESTORE_INDEX].setValues(entriesUpload[FIRESTORE_INDEX]);
+                dataSets.set(FIRESTORE_INDEX, dataSetUpload[FIRESTORE_INDEX]);
                 updateChart();
 
                 break;
         }
-    }
-
-    private void updateChart() {
-        lineData = new LineData(dataSets);
-        chart.setData(lineData);
-        chart.invalidate();
     }
 
     private boolean getInput() {
@@ -226,19 +201,15 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
         return true;
     }
 
+    private void updateChart() {
+        lineData = new LineData(dataSets);
+        chart.setData(lineData);
+        chart.invalidate();
+    }
+
     private void createLineDataSet(int index) {
-        if (index == 0) {
-            dataSetUploadRealtime = new LineDataSet(entriesUploadRealtime, LABEL_REALTIME);
-            dataSetUploadRealtime.setColor(Color.BLUE);
-            dataSetUploadRealtime.setValueTextColor(DEFAULT_LABEL_COLOR);
-        } else if (index == 1) {
-            dataSetUploadFirestore = new LineDataSet(entriesUploadFirestore, LABEL_FIRESTORE);
-            dataSetUploadFirestore.setColor(Color.GREEN);
-            dataSetUploadFirestore.setValueTextColor(DEFAULT_LABEL_COLOR);
-        } else if (index == 2) {
-            dataSetUploadRealm = new LineDataSet(entriesUploadRealm, LABEL_REALM);
-            dataSetUploadRealm.setColor(Color.GRAY);
-            dataSetUploadRealm.setValueTextColor(DEFAULT_LABEL_COLOR);
-        }
+        dataSetUpload[index] = new LineDataSet(entriesUpload[index], LABELS[index]);
+        dataSetUpload[index].setColor(LINE_COLORS[index]);
+        dataSetUpload[index].setValueTextColor(DEFAULT_LABEL_COLOR);
     }
 }
