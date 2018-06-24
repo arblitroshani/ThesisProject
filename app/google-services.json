@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "582858286948",
+    "firebase_url": "https://thesis-project-arbli.firebaseio.com",
+    "project_id": "thesis-project-arbli",
+    "storage_bucket": "thesis-project-arbli.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:582858286948:android:2508d0cc47c5751b",
+        "android_client_info": {
+          "package_name": "me.arblitroshani.thesisproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "582858286948-ovau8iutdsng71uchjqg2fsl33i05938.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.arblitroshani.thesisproject",
+            "certificate_hash": "c3744d85c2e6a26496677b4d82ceb409086f0b2a"
+          }
+        },
+        {
+          "client_id": "582858286948-h9mp4gq7ucd2dmuarr1135v208vm4mo6.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "582858286948-h9mp4gq7ucd2dmuarr1135v208vm4mo6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1jfUFJF6cbI-tHUpW5NS7lB5474I72sU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "582858286948-h9mp4gq7ucd2dmuarr1135v208vm4mo6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

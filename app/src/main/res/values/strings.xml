@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">Thesis Project</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_measure">Measure</string>
+
+    <string name="title_upload">Upload</string>
+    <string name="title_query">Query</string>
+    <string name="title_sync">Synchronization</string>
+
+    <string name="info_title_upload">Measure Uploads</string>
+    <string name="info_title_query">Query Performance</string>
+    <string name="info_title_sync">Real time Sync</string>
+
+    <string name="info_subtitle_upload">Measure Uploads</string>
+    <string name="info_subtitle_query">Query Performance</string>
+    <string name="info_subtitle_sync">Real time Sync</string>
+
+    <string name="setup">Start fresh - Clear existing data</string>
+    <string name="setup1">Data Set Size</string>
+
+</resources>
