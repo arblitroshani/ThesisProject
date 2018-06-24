@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -26,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,6 +56,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
     private LineChart chart;
     private Button bRealtime, bFirestore, bRealm;
     private EditText etDataSet, etNumTrials;
+    private TextView tvAverageRealtime, tvAverageFirestore, tvAverageRealm;
 
     private List<ILineDataSet> dataSets;
     private LineData lineData;
@@ -87,13 +90,15 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
         bRealtime = view.findViewById(R.id.bRealtime);
         bFirestore = view.findViewById(R.id.bFirestore);
         bRealm = view.findViewById(R.id.bRealm);
+        etDataSet = view.findViewById(R.id.etDataSet);
+        etNumTrials = view.findViewById(R.id.etNumTrials);
+        tvAverageRealtime = view.findViewById(R.id.tvAverageRealtime);
+        tvAverageFirestore = view.findViewById(R.id.tvAverageFirestore);
+        tvAverageRealm = view.findViewById(R.id.tvAverageRealm);
 
         bRealtime.setOnClickListener(this);
         bFirestore.setOnClickListener(this);
         bRealm.setOnClickListener(this);
-
-        etDataSet = view.findViewById(R.id.etDataSet);
-        etNumTrials = view.findViewById(R.id.etNumTrials);
 
         realtimeRef = FirebaseDatabase.getInstance().getReference(REALTIME_PATH);
 
@@ -137,6 +142,8 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                 InputStreamReader inputReader;
                 BufferedReader bufferedReader;
 
+                double weightedAverage = 0.0;
+
                 try {
                     for (int j = 0; j < numTrials + 1; j++) {
                         realtimeRef.removeValue();
@@ -157,12 +164,19 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                         // get end time
                         long endTime = System.nanoTime();
                         double diff = (endTime - startTime) / 1000000.0;
+                        if (j == 1) {
+                            weightedAverage = diff;
+                        } else {
+                            weightedAverage = 0.8 * weightedAverage + 0.2 * diff;
+                        }
                         // add to array
                         entriesUpload[REALTIME_INDEX].add(new Entry((float) j, (float) diff));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+                tvAverageRealtime.setText(new DecimalFormat("#0.000").format(weightedAverage) + " ms");
 
                 dataSetUpload[REALTIME_INDEX].setValues(entriesUpload[REALTIME_INDEX]);
                 dataSets.set(REALTIME_INDEX, dataSetUpload[REALTIME_INDEX]);
