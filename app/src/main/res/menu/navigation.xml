@@ -10,10 +10,4 @@
         android:id="@+id/navigation_query"
         android:icon="@drawable/baseline_filter_list_black_24dp"
         android:title="@string/title_query" />
-
-    <item
-        android:id="@+id/navigation_sync"
-        android:icon="@drawable/baseline_sync_black_24dp"
-        android:title="@string/title_sync" />
-
 </menu>

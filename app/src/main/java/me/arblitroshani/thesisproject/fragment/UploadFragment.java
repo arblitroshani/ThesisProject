@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import me.arblitroshani.thesisproject.MeasureActivity;
 import me.arblitroshani.thesisproject.R;
 import me.arblitroshani.thesisproject.model.NameStat;
 
