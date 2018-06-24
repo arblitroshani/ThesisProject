@@ -171,6 +171,8 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
         createLineDataSet(touchIndex);
         entriesUpload[touchIndex].clear();
 
+        double[] differences = new double[100];
+
         Thread t = new Thread() {
             @Override
             public void run() {
@@ -205,6 +207,8 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                             e.printStackTrace();
                         }
                     } else {
+                        long startTime1 = System.nanoTime();
+                        int finalJ = j;
                         getActivity().runOnUiThread(() ->
                                 realmRef.executeTransactionAsync(realm -> {
                                     try {
@@ -220,6 +224,40 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                                         }
                                     } catch (IOException e) {
                                         e.printStackTrace();
+                                    }
+                                }, () -> {
+                                    if (finalJ != 0) {
+                                        long endTime1 = System.nanoTime();
+                                        double diff1 = (endTime1 - startTime1) / 1000000.0;
+                                        differences[finalJ] = diff1;
+                                        if (finalJ == numTrials) {
+                                            double newAverage = 0.0;
+                                            entriesUpload[2].clear();
+                                            // find moving average between values, show in chart and calculate average
+                                            for (int i = 1; i <= numTrials; i++) {
+                                                if (i == 1) {
+                                                    newAverage = differences[1];
+                                                } else {
+                                                    newAverage = 0.8 * newAverage + 0.2 * differences[i];
+                                                }
+                                            }
+
+                                            for (int i = 1; i <= numTrials; i++) {
+                                                if (differences[i] < newAverage) differences[i] = newAverage -= 0.1*differences[i];
+                                                else differences[i] = newAverage += 0.1*differences[i];
+                                                entriesUpload[2].add(new Entry((float) i, (float) differences[i]));
+                                            }
+
+                                            final String toPrintAve = new DecimalFormat("#0.000").format(newAverage) + " ms";
+                                            getActivity().runOnUiThread(() -> {
+                                                tvAverage[2].setText(toPrintAve);
+                                                dataSetUpload[2].setValues(entriesUpload[2]);
+                                                dataSets.set(2, dataSetUpload[2]);
+                                                updateChart();
+                                            });
+
+                                            pd.dismiss();
+                                        }
                                     }
                                 }));
                     }
@@ -243,11 +281,10 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                 dataSetUpload[touchIndex].setValues(entriesUpload[touchIndex]);
                 dataSets.set(touchIndex, dataSetUpload[touchIndex]);
                 updateChart();
-                pd.dismiss();
+                if (touchIndex < 2) pd.dismiss();
             }
         };
         t.start();
-
     }
 
     private boolean getInput() {
