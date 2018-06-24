@@ -242,6 +242,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                                                 }
                                             }
 
+                                            // smooth out values
                                             for (int i = 1; i <= numTrials; i++) {
                                                 if (differences[i] < newAverage) differences[i] = newAverage -= 0.1*differences[i];
                                                 else differences[i] = newAverage += 0.1*differences[i];

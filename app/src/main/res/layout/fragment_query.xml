@@ -1,14 +1,257 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:fillViewport="true"
     android:layout_height="match_parent"
-    tools:context=".fragment.QueryFragment">
+    android:layout_width="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Q" />
+        android:orientation="vertical">
 
-</FrameLayout>
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:layout_marginTop="@dimen/card_margin"
+            android:layout_marginLeft="@dimen/card_margin"
+            android:layout_marginRight="@dimen/card_margin"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="3dp">
+            <RelativeLayout
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvp1"
+                    style="@style/TextAppearance.AppCompat.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:adjustViewBounds="true"
+                    android:text="Query 1"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/tv1"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/tvp1"
+                    android:text="@string/query1"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/bRealm1"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/tv1"
+                    android:text="Realm"
+                    android:textColor="@color/colorAccent" />
+
+                <Button
+                    android:id="@+id/bFirestore1"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/bRealm1"
+                    android:layout_below="@+id/tv1"
+                    android:text="Firestore"
+                    android:textColor="@color/colorAccent" />
+
+                <Button
+                    android:id="@+id/bRealtime1"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/bFirestore1"
+                    android:layout_below="@+id/tv1"
+                    android:text="Realtime"
+                    android:textColor="@color/colorAccent" />
+
+                <Button
+                    android:id="@+id/bClear"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-7dp"
+                    android:layout_alignParentEnd="true"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:text="CLEAR" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:layout_marginTop="@dimen/card_margin"
+            android:layout_marginLeft="@dimen/card_margin"
+            android:layout_marginRight="@dimen/card_margin"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="3dp">
+            <RelativeLayout
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvp2"
+                    style="@style/TextAppearance.AppCompat.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:adjustViewBounds="true"
+                    android:text="Query 2"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/tv2"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/tvp2"
+                    android:text="@string/query2"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/bRealm2"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/tv2"
+                    android:text="Realm"
+                    android:textColor="@color/colorAccent" />
+
+                <Button
+                    android:id="@+id/bFirestore2"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/bRealm2"
+                    android:layout_below="@+id/tv2"
+                    android:text="Firestore"
+                    android:textColor="@color/colorAccent" />
+
+                <Button
+                    android:id="@+id/bRealtime2"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/bFirestore2"
+                    android:layout_below="@+id/tv2"
+                    android:text="Realtime"
+                    android:textColor="@color/colorAccent" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:layout_marginTop="@dimen/card_margin"
+            android:layout_marginLeft="@dimen/card_margin"
+            android:layout_marginRight="@dimen/card_margin"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="3dp">
+            <RelativeLayout
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvp3"
+                    style="@style/TextAppearance.AppCompat.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:adjustViewBounds="true"
+                    android:text="Query 3"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/tv3"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/tvp3"
+                    android:text="@string/query3"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/bRealm3"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/tv3"
+                    android:text="Realm"
+                    android:textColor="@color/colorAccent" />
+
+                <Button
+                    android:id="@+id/bFirestore3"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/bRealm3"
+                    android:layout_below="@+id/tv3"
+                    android:text="Firestore"
+                    android:textColor="@color/colorAccent" />
+
+                <Button
+                    android:id="@+id/bRealtime3"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/bFirestore3"
+                    android:layout_below="@+id/tv3"
+                    android:text="Realtime"
+                    android:textColor="@color/colorAccent" />
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/tvRealtime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="24dp"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/tvFirestore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/tvRealm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="" />
+
+
+    </LinearLayout>
+</ScrollView>
