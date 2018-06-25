@@ -199,8 +199,8 @@ public class QueryFragment extends Fragment implements View.OnClickListener{
                         });
                 break;
             case R.id.bRealm1:
-                RealmResults<NameStatRealm> results =
-                        realmRef.where(NameStatRealm.class)
+                RealmResults<NameStatRealm> results = realmRef
+                        .where(NameStatRealm.class)
                         .greaterThan("occurrences", 23)
                         .findAllAsync();
                 results.addChangeListener((o, changeSet) -> {
