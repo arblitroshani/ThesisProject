@@ -20,6 +20,6 @@
 
     <string name="query1">Select all names with more than 23 occurrences</string>
     <string name="query2">Select all names that start with \'AR\'</string>
-    <string name="query3">Select all names with less than 100 occurrences and start with \'TR\'</string>
+    <string name="query3">Select all names with exactly 1846 occurrences and start with \'TR\'</string>
 
 </resources>

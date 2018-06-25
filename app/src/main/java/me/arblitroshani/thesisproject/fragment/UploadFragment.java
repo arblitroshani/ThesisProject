@@ -125,7 +125,7 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
         loginRealm();
 
         Description d = new Description();
-        d.setText("Chart description");
+        d.setText("Upload times (ms)");
         chart.setDescription(d);
 
         XAxis xAxis = chart.getXAxis();
@@ -243,11 +243,11 @@ public class UploadFragment extends Fragment implements View.OnClickListener {
                                             }
 
                                             // smooth out values
-                                            for (int i = 1; i <= numTrials; i++) {
-                                                if (differences[i] < newAverage) differences[i] = newAverage -= 0.1*differences[i];
-                                                else differences[i] = newAverage += 0.1*differences[i];
-                                                entriesUpload[2].add(new Entry((float) i, (float) differences[i]));
-                                            }
+//                                            for (int i = 1; i <= numTrials; i++) {
+//                                                if (differences[i] < newAverage) differences[i] = newAverage -= 0.1*differences[i];
+//                                                else differences[i] = newAverage += 0.1*differences[i];
+//                                                entriesUpload[2].add(new Entry((float) i, (float) differences[i]));
+//                                            }
 
                                             final String toPrintAve = new DecimalFormat("#0.000").format(newAverage) + " ms";
                                             getActivity().runOnUiThread(() -> {
